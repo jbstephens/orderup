@@ -222,6 +222,24 @@ const SFX = (function(){
       tone({ f0: 820, f1: 500, dur: 0.13, type: 'square', vol: 0.07, at: 0.01 });
       tone({ f0: 205, dur: 0.2, type: 'triangle', vol: 0.12, at: 0.05 });
     },
+    // v2 CHAOS: the wet comedy landing of a soft thing somewhere it should not be
+    squelch(){
+      noise({ f: 700, f1: 180, q: 1.4, dur: 0.22, vol: 0.3, ftype: 'lowpass' });
+      tone({ f0: 260, f1: 60, dur: 0.2, type: 'triangle', vol: 0.22 });
+      tone({ f0: 900, f1: 320, dur: 0.09, type: 'sine', vol: 0.1, at: 0.02 });
+      noise({ f: 2400, f1: 500, q: 2, dur: 0.12, vol: 0.1, at: 0.05 });
+    },
+    // v2: SEND IT — the plate whooshes down the pass, come what may
+    send(){
+      noise({ f: 500, f1: 2600, dur: 0.28, vol: 0.16 });
+      tone({ f0: 300, f1: 700, dur: 0.25, type: 'sine', vol: 0.07 });
+    },
+    // v2: warm little "wah-waah" for a wrong shipment — never mean
+    aghast(){
+      tone({ f0: 392, f1: 330, dur: 0.22, type: 'triangle', vol: 0.16 });
+      tone({ f0: 330, f1: 262, dur: 0.34, type: 'triangle', vol: 0.16, at: 0.24 });
+      tone({ f0: 165, f1: 131, dur: 0.34, type: 'sine', vol: 0.1, at: 0.24 });
+    },
     tip(n){
       const base = [988, 1319, 1568];
       for (let i = 0; i < Math.min(3, 1 + (n > 8 ? 1 : 0) + (n > 15 ? 1 : 0)); i++)
@@ -578,6 +596,152 @@ defIng({ id:'syrup', name:'SYRUP', w:196, up:14, dn:34, rise:6,
     g.fillStyle = 'rgba(255,214,150,0.65)'; g.fill();
   }});
 
+// — pizza (v2) —
+defIng({ id:'pzcrust', name:'PIZZA CRUST', w:216, up:32, dn:4, rise:16,
+  draw(g){
+    rr(g, -104, -14, 208, 16, 8);
+    g.fillStyle = vgrad(g, -14, 2, [[0, '#f2d9a0'], [0.55, '#e8be72'], [1, '#cf9a44']]); g.fill();
+    // puffed back rim
+    rr(g, -104, -30, 208, 20, 10);
+    g.fillStyle = vgrad(g, -30, -10, [[0, '#f7cf85'], [0.6, '#e0a952'], [1, '#c2822f']]); g.fill();
+    rr(g, -96, -28, 192, 6, 3); g.fillStyle = 'rgba(255,240,205,0.55)'; g.fill();
+    // char spots from the oven
+    g.fillStyle = 'rgba(120,70,25,0.35)';
+    for (const [sx, sy] of [[-70, -22], [-18, -24], [36, -21], [82, -24]]){
+      g.beginPath(); g.ellipse(sx, sy, 6, 3.4, 0, 0, Math.PI * 2); g.fill();
+    }
+  }});
+defIng({ id:'pzsauce', name:'PIZZA SAUCE', w:192, up:16, dn:8, rise:7,
+  draw(g){
+    g.beginPath(); g.moveTo(-94, -4);
+    for (let i = 0; i < 6; i++){
+      const x0 = -94 + i * 188 / 6, x1 = -94 + (i + 1) * 188 / 6;
+      g.quadraticCurveTo((x0 + x1) / 2, 8, x1, -4);
+    }
+    g.lineTo(94, -13); g.lineTo(-94, -13); g.closePath();
+    g.fillStyle = vgrad(g, -13, 8, [[0, '#e8563c'], [0.6, '#c93a24'], [1, '#9c2817']]); g.fill();
+    rr(g, -84, -12, 168, 4, 2); g.fillStyle = 'rgba(255,150,120,0.55)'; g.fill();
+    g.fillStyle = 'rgba(120,20,8,0.4)';
+    for (const sx of [-56, -8, 44]){ g.beginPath(); g.arc(sx, -3, 3, 0, Math.PI * 2); g.fill(); }
+  }});
+defIng({ id:'pepperoni', name:'PEPPERONI', w:206, up:16, dn:2, rise:8,
+  draw(g){
+    for (const [px, po] of [[-76, 0], [-28, -3], [22, -2], [70, 0]]){
+      const grd = g.createRadialGradient(px - 3, -9 + po, 2, px, -8 + po, 15);
+      grd.addColorStop(0, '#e0604a'); grd.addColorStop(0.6, '#b53224'); grd.addColorStop(1, '#8c2016');
+      g.beginPath(); g.ellipse(px, -8 + po, 15, 9, 0, 0, Math.PI * 2); g.fillStyle = grd; g.fill();
+      g.strokeStyle = 'rgba(90,20,10,0.5)'; g.lineWidth = 2; g.stroke();
+      g.fillStyle = 'rgba(255,200,170,0.55)';
+      g.beginPath(); g.ellipse(px - 4, -11 + po, 3, 1.8, 0.3, 0, Math.PI * 2); g.fill();
+      g.beginPath(); g.ellipse(px + 5, -6 + po, 2.4, 1.5, -0.4, 0, Math.PI * 2); g.fill();
+    }
+  }});
+defIng({ id:'pzcheese', name:'MOZZARELLA', w:198, up:16, dn:18, rise:8,
+  draw(g){
+    g.beginPath(); g.moveTo(-96, -14); g.lineTo(96, -14); g.quadraticCurveTo(99, -4, 92, 4);
+    g.quadraticCurveTo(66, -2, 48, 6); g.quadraticCurveTo(20, -2, -4, 8);
+    g.quadraticCurveTo(-34, 0, -58, 10); g.quadraticCurveTo(-84, 2, -92, 6);
+    g.quadraticCurveTo(-99, -4, -96, -14); g.closePath();
+    g.fillStyle = vgrad(g, -14, 10, [[0, '#fff3d6'], [0.55, '#ffe09a'], [1, '#efb95c']]); g.fill();
+    // hanging melty drips
+    g.fillStyle = '#f7d789';
+    for (const [dx, dl] of [[-58, 10], [-4, 8], [48, 6]]){ rr(g, dx - 5, dl - 4, 10, 12, 5); g.fill(); }
+    rr(g, -84, -13, 168, 4, 2); g.fillStyle = 'rgba(255,250,225,0.7)'; g.fill();
+    // toasty bubbles
+    g.fillStyle = 'rgba(200,130,40,0.4)';
+    for (const [bx, by] of [[-40, -6], [16, -4], [66, -7]]){ g.beginPath(); g.arc(bx, by, 4, 0, Math.PI * 2); g.fill(); }
+  }});
+
+// — tacos (v2) —
+defIng({ id:'shell', name:'TACO SHELL', w:200, up:48, dn:4, rise:18,
+  draw(g){
+    g.save(); g.scale(1.62, 1);
+    g.beginPath();
+    g.arc(0, -58, 60, 0.24, Math.PI - 0.24);
+    g.arc(0, -58, 44, Math.PI - 0.3, 0.3, true);
+    g.closePath();
+    g.fillStyle = vgrad(g, -58, 4, [[0, '#f7cf7f'], [0.55, '#e6ac4e'], [1, '#c48430']]); g.fill();
+    g.strokeStyle = 'rgba(255,238,190,0.6)'; g.lineWidth = 3;
+    g.beginPath(); g.arc(0, -58, 45.5, Math.PI - 0.3, 0.3, true); g.stroke();
+    g.restore();
+    // corn speckles
+    g.fillStyle = 'rgba(150,95,35,0.5)';
+    for (const [sx, sy] of [[-64, -24], [-30, -6], [10, -2], [48, -14], [76, -30]]){
+      g.beginPath(); g.ellipse(sx, sy, 3, 2, 0.3, 0, Math.PI * 2); g.fill();
+    }
+  }});
+defIng({ id:'tfill', name:'BEEF', w:140, up:36, dn:0, rise:14,
+  draw(g){
+    g.beginPath(); g.ellipse(0, -12, 66, 20, 0, 0, Math.PI * 2); g.fillStyle = '#5c3316'; g.fill();
+    const crumbs = [[-48,-10,10],[-38,-22,8],[-28,-20,11],[-14,-8,10],[-6,-26,12],[12,-6,9],[18,-20,11],[34,-24,8],[40,-12,10]];
+    for (const [cx2, cy2, cr] of crumbs){
+      const rg = g.createRadialGradient(cx2 - 2, cy2 - 3, 1, cx2, cy2, cr);
+      rg.addColorStop(0, '#a5673a'); rg.addColorStop(0.7, '#7d4a26'); rg.addColorStop(1, '#5c3316');
+      g.beginPath(); g.arc(cx2, cy2, cr, 0, Math.PI * 2); g.fillStyle = rg; g.fill();
+    }
+  }});
+defIng({ id:'salsa', name:'SALSA', w:130, up:22, dn:2, rise:9,
+  draw(g){
+    g.beginPath(); g.ellipse(0, -8, 60, 13, 0, 0, Math.PI * 2);
+    g.fillStyle = vgrad(g, -21, 5, [[0, '#e04f35'], [0.6, '#c23322'], [1, '#961f14']]); g.fill();
+    g.beginPath(); g.ellipse(-2, -14, 40, 8, 0, 0, Math.PI * 2); g.fillStyle = '#d8402c'; g.fill();
+    // tomato chunks + cilantro flecks
+    g.fillStyle = '#f06a50';
+    for (const [sx, sy] of [[-34, -12], [2, -16], [30, -10]]){ rr(g, sx - 5, sy - 4, 10, 8, 3); g.fill(); }
+    g.fillStyle = '#5fae35';
+    for (const [sx, sy] of [[-18, -9], [16, -13], [42, -8], [-42, -7]]){
+      g.beginPath(); g.ellipse(sx, sy, 3.4, 2, 0.5, 0, Math.PI * 2); g.fill();
+    }
+    g.beginPath(); g.ellipse(-20, -16, 12, 3.5, -0.2, 0, Math.PI * 2);
+    g.fillStyle = 'rgba(255,190,170,0.5)'; g.fill();
+  }});
+
+// — sundaes (v2) —
+defIng({ id:'bowl', name:'BOWL', w:150, up:56, dn:2, rise:34,
+  draw(g){
+    // chrome foot
+    g.beginPath(); g.ellipse(0, -3, 26, 6, 0, 0, Math.PI * 2); g.fillStyle = '#b9c6cf'; g.fill();
+    rr(g, -7, -18, 14, 14, 3); g.fillStyle = '#9dadb8'; g.fill();
+    // glass coupe (translucent — the scoops peek out over the rim)
+    g.beginPath(); g.moveTo(-70, -52); g.quadraticCurveTo(-62, -20, -20, -16);
+    g.lineTo(20, -16); g.quadraticCurveTo(62, -20, 70, -52); g.closePath();
+    g.fillStyle = 'rgba(196,220,236,0.6)'; g.fill();
+    g.strokeStyle = 'rgba(150,175,195,0.9)'; g.lineWidth = 4.5; g.stroke();
+    g.beginPath(); g.ellipse(0, -52, 70, 8, 0, 0, Math.PI * 2);
+    g.strokeStyle = 'rgba(255,255,255,0.85)'; g.lineWidth = 3.5; g.stroke();
+    g.beginPath(); g.moveTo(-48, -46); g.quadraticCurveTo(-44, -26, -22, -20);
+    g.strokeStyle = 'rgba(255,255,255,0.55)'; g.lineWidth = 6; g.stroke();
+  }});
+defIng({ id:'scoop', name:'SCOOP', w:110, up:58, dn:8, rise:26,
+  draw(g){
+    const grd = g.createRadialGradient(-14, -38, 4, 0, -26, 50);
+    grd.addColorStop(0, '#fffef8'); grd.addColorStop(0.6, '#f6ecd2'); grd.addColorStop(1, '#d6c49e');
+    g.beginPath(); g.ellipse(0, -26, 46, 30, 0, 0, Math.PI * 2); g.fillStyle = grd; g.fill();
+    // ragged melt skirt
+    g.fillStyle = '#efe2c2';
+    for (const [sx, sw] of [[-30, 14], [-4, 17], [24, 13]]){
+      g.beginPath(); g.ellipse(sx, 2, sw, 6, 0, 0, Math.PI * 2); g.fill();
+    }
+    // vanilla-bean specks
+    g.fillStyle = 'rgba(90,60,30,0.45)';
+    for (const [sx, sy] of [[-22, -30], [6, -40], [26, -22], [-8, -16], [18, -34], [-34, -18]]){
+      g.beginPath(); g.ellipse(sx, sy, 1.6, 1.1, 0.4, 0, Math.PI * 2); g.fill();
+    }
+    g.beginPath(); g.ellipse(-16, -40, 12, 7, -0.4, 0, Math.PI * 2);
+    g.fillStyle = 'rgba(255,255,250,0.8)'; g.fill();
+  }});
+defIng({ id:'choco', name:'FUDGE', w:120, up:16, dn:26, rise:7,
+  draw(g){
+    g.beginPath(); g.ellipse(0, -6, 52, 11, 0, 0, Math.PI * 2);
+    g.fillStyle = vgrad(g, -17, 5, [[0, '#7a4526'], [0.6, '#5c3016'], [1, '#40200c']]); g.fill();
+    for (const [dx, dl] of [[-38, 14], [-12, 24], [16, 18], [40, 12]]){
+      rr(g, dx - 5, -2, 10, dl, 5); g.fillStyle = '#4d2810'; g.fill();
+      g.beginPath(); g.arc(dx, dl - 3, 5.4, 0, Math.PI * 2); g.fillStyle = '#5c3016'; g.fill();
+    }
+    g.beginPath(); g.ellipse(-18, -9, 20, 3.5, -0.1, 0, Math.PI * 2);
+    g.fillStyle = 'rgba(255,200,150,0.4)'; g.fill();
+  }});
+
 /* ── Dishes: sequence bottom→top. PREFIX-FREE by construction (no dish is
    a strict prefix of another), so the exact-match auto-serve can never
    fire early on a longer order. */
@@ -596,9 +760,19 @@ const DISHES = [
   { id:'pancakes_tall',  name:'TALL STACK',    fam:'PANCAKES', day:8, seq:['pancake','pancake','pancake','butter','syrup'] },
   { id:'burger_double',  name:'DOUBLE DOUBLE', fam:'BURGERS',  day:9, seq:['bun','patty','cheese','patty','cheese','bun'] },
   { id:'pie_cream',      name:'CREAM PIE',     fam:'PIES',     day:9, seq:['crust','filling','whip','cherry'] },
+  // v2 — three new families, days 10–12. NOTE: pepperoni sits UNDER the
+  // mozzarella (cheese seals it in) so PIZZA SLICE is not a prefix of
+  // PEPPERONI PIZZA — the auto-serve law demands a prefix-free menu.
+  { id:'pizza_slice',    name:'PIZZA SLICE',   fam:'PIZZA',    day:10, seq:['pzcrust','pzsauce','pzcheese'] },
+  { id:'pizza_pep',      name:'PEPPERONI PIZZA', fam:'PIZZA',  day:10, seq:['pzcrust','pzsauce','pepperoni','pzcheese'] },
+  { id:'taco',           name:'TACO',          fam:'TACOS',    day:11, seq:['shell','tfill','cheese','salsa'] },
+  { id:'taco_double',    name:'DOUBLE TACO',   fam:'TACOS',    day:11, seq:['shell','tfill','tfill','cheese','salsa'] },
+  { id:'sundae',         name:'SUNDAE',        fam:'SUNDAES',  day:12, seq:['bowl','scoop','choco','cherry'] },
+  { id:'sundae_tall',    name:'TALL SUNDAE',   fam:'SUNDAES',  day:12, seq:['bowl','scoop','scoop','choco','cherry'] },
 ];
 // day → the family banner for "NEW ON THE MENU!"
-const NEW_FAMILY = { 1:'BURGERS', 2:'FRIES', 3:'HOT DOGS', 4:'SHAKES', 5:'PANCAKES', 6:'PIES' };
+const NEW_FAMILY = { 1:'BURGERS', 2:'FRIES', 3:'HOT DOGS', 4:'SHAKES', 5:'PANCAKES', 6:'PIES',
+                     10:'PIZZA', 11:'TACOS', 12:'SUNDAES' };
 
 function menuForDay(day){ return DISHES.filter(d => d.day <= day); }
 function unlockedIngredients(day){
@@ -607,8 +781,35 @@ function unlockedIngredients(day){
   return ING_ORDER.filter(id => set.has(id));
 }
 
+/* ── v2 CHAOS CLAUSE: soft/liquid ingredients SPLAT when they land where
+   they don't belong. value = the splash color for puddle + particles. */
+const SOFT = {
+  shake:'#ff8aa8', whip:'#f6f0e0', syrup:'#a3571a', filling:'#a02033',
+  ketchup:'#d8352a', mustard:'#f5c518', pzsauce:'#c93a24', salsa:'#c23322',
+  choco:'#5c3016', scoop:'#f6ecd2', tfill:'#7d4a26',
+};
+const SPLAT_RISE = 8;   // a splatted layer is nearly flat
+
 /* ── Sprite bakery for ingredients ── */
 const MINI_S = 0.24;
+// The flattened mid-splat variant: puddle blobs + the ingredient squashed flat.
+function bakeSplat(ing, col){
+  const w = ing.w * 1.5 + 26, up = 28, dn = 20;
+  const c = mk(w, up + dn), g = c.getContext('2d');
+  g.translate(w / 2, up);
+  g.fillStyle = col;
+  g.beginPath(); g.ellipse(0, 2, w / 2 - 8, 9, 0, 0, Math.PI * 2); g.fill();
+  for (const [bx, br] of [[-w * 0.34, 7], [-w * 0.14, 9], [w * 0.1, 8], [w * 0.32, 6.5]]){
+    g.beginPath(); g.ellipse(bx, -2, br * 1.7, br, 0, 0, Math.PI * 2); g.fill();
+  }
+  // the ingredient itself, comically flattened
+  g.save(); g.scale(1.06, 0.34);
+  ing.draw(g, ing.variants ? 'top' : undefined);
+  g.restore();
+  g.fillStyle = 'rgba(255,255,255,0.28)';
+  g.beginPath(); g.ellipse(-w * 0.16, -6, w * 0.16, 3.2, 0, 0, Math.PI * 2); g.fill();
+  return { cv: c, ax: w / 2, ay: up };
+}
 function bakeSprite(ing, variant, scale){
   const up = ing.variants ? ing.up[variant] : ing.up;
   const dn = ing.variants ? ing.dn[variant] : ing.dn;
@@ -632,6 +833,7 @@ function bakeIngredients(){
     const up = ing.variants ? ing.up[iv] : ing.up, dn = ing.variants ? ing.dn[iv] : ing.dn;
     const s = Math.min(52 / ing.w, 46 / (up + dn));
     ing.icon = bakeSprite(ing, iv, s);
+    if (SOFT[id]) ing.splat = bakeSplat(ing, SOFT[id]);
   }
 }
 // Position-aware access: buns render as bottom slab at index 0, dome above.
@@ -642,6 +844,11 @@ function layerSpr(ingId, idx, size){
     return { spr: ing.spr[v][size], rise: ing.rise[v] };
   }
   return { spr: ing.spr.def[size], rise: ing.rise };
+}
+// Stack-entry-aware lookup: a splatted layer draws (and rises) as a splat.
+function entrySpr(e, size){
+  if (e.splat && size === 'hero') return { spr: ING[e.id].splat, rise: SPLAT_RISE };
+  return layerSpr(e.id, e.idx, size);
 }
 function stackHeight(seq){
   let h = 0;
@@ -896,14 +1103,16 @@ function bakeBGs(cosm){
   }
 }
 
-// ── customer faces: 4 moods × 3 skins, hand-expressive
+// ── customer faces: 6 moods × 3 skins, hand-expressive
+//    0 happy · 1 okay · 2 worried · 3 sad(leaving) · 4 bewildered · 5 mad
+//    (4 & 5 are the v2 wrong-shipment faces — aghast, never crying)
 const SKINS = ['#ffd9ad', '#e0a06b', '#9c6a44'];
 const HAIRS = ['#5d4437', '#2f2622', '#b03528'];
 function bakeFaces(){
   B.faces = [];
   for (let sk = 0; sk < 3; sk++){
     const set = [];
-    for (let mood = 0; mood < 4; mood++){
+    for (let mood = 0; mood < 6; mood++){
       const c = mk(52, 52), g = c.getContext('2d');
       g.translate(26, 27);
       g.beginPath(); g.arc(0, 0, 22, 0, Math.PI * 2);
@@ -933,10 +1142,31 @@ function bakeFaces(){
         g.beginPath(); g.arc(0, 10, 4, 0, Math.PI * 2); g.stroke();
         g.fillStyle = '#7fd0f0';
         g.beginPath(); g.arc(17, -10, 3.6, 0, Math.PI * 2); g.fill();
-      } else {                // sad (leaving — still gentle)
+      } else if (mood === 3){ // sad (leaving — still gentle)
         g.beginPath(); g.moveTo(-11, -3); g.lineTo(-5, -1); g.moveTo(11, -3); g.lineTo(5, -1); g.stroke();
         g.beginPath(); g.arc(0, 14, 8, Math.PI + 0.35, -0.35); g.stroke();
         eye(-8); eye(8);
+      } else if (mood === 4){ // bewildered — "I… did not order this."
+        g.fillStyle = '#fff';
+        g.beginPath(); g.arc(-8, -2, 5, 0, Math.PI * 2); g.fill();
+        g.beginPath(); g.arc(8, -2, 5, 0, Math.PI * 2); g.fill();
+        g.strokeStyle = '#3b2620'; g.lineWidth = 2.2;
+        g.beginPath(); g.arc(-8, -2, 5, 0, Math.PI * 2); g.stroke();
+        g.beginPath(); g.arc(8, -2, 5, 0, Math.PI * 2); g.stroke();
+        g.fillStyle = '#3b2620';
+        g.beginPath(); g.arc(-7, -1, 2, 0, Math.PI * 2); g.fill();
+        g.beginPath(); g.arc(9, -1, 2, 0, Math.PI * 2); g.fill();
+        g.lineWidth = 2.8;
+        g.beginPath(); g.arc(-8, -10, 4, Math.PI + 0.4, -0.4); g.stroke();
+        g.beginPath(); g.arc(8, -10, 4, Math.PI + 0.4, -0.4); g.stroke();
+        g.beginPath(); g.arc(0, 9, 3.4, 0, Math.PI * 2); g.stroke();
+      } else {                // mad — steamed, but still warm (no tears ever)
+        eye(-8); eye(8);
+        g.beginPath(); g.moveTo(-13, -10); g.lineTo(-4, -5); g.moveTo(13, -10); g.lineTo(4, -5); g.stroke();
+        g.beginPath(); g.moveTo(-7, 10); g.quadraticCurveTo(0, 7, 7, 10); g.stroke();
+        g.fillStyle = 'rgba(240,110,90,0.6)';
+        g.beginPath(); g.arc(-13, 4, 3.5, 0, Math.PI * 2); g.fill();
+        g.beginPath(); g.arc(13, 4, 3.5, 0, Math.PI * 2); g.fill();
       }
       set.push(anchorSpr(c, 26, 27));
     }
@@ -1225,7 +1455,12 @@ function makeLayout(off, w, two){
     passX: off + (two ? 566 : 1146), passY: 452,
     cookX: off + (two ? 118 : 250),
     hero: two ? 0.72 : 1,
-    grid: { tile: two ? 56 : 62, gap: two ? 6 : 8, perRow: 7, cx: off + (two ? 320 : 640), topY: two ? 526 : 512 },
+    // v2: the full menu is 31 ingredients — 1P holds 3 rows of 11, 2P drops
+    // to 48px tiles in 4 rows of 8 so nothing clips at 720p and the grid
+    // stays clear of the shared register/time bar in the center gap.
+    grid: two
+      ? { tile: 48, gap: 5, perRow: 8,  cx: off + 320, topY: 506 }
+      : { tile: 62, gap: 8, perRow: 11, cx: off + 640, topY: 512 },
   };
 }
 const LAY1 = [makeLayout(0, 1280, false)];
@@ -1285,7 +1520,29 @@ const CHATTER = {
   hurry: ['Hurry, chef!', 'Getting hungry…', 'Almost ready?'],
   leave: ['Gotta catch the bus!', 'Next time!', 'Back tomorrow!'],
   closing: ['See ya!', 'Night, chef!', 'Great diner!'],
+  // v2 wrong-shipment reactions — bewildered and warm, never mean
+  wrong: [
+    'I… did not order this.',
+    "It's ART. But it is not a hamburger.",
+    'Bold. Very bold.',
+    'Chef… we need to talk.',
+    "I'll frame it. Not eat it.",
+    'The plate did its best.',
+    'Is it… still growing?',
+  ],
 };
+let wrongLineIx = (Math.random() * CHATTER.wrong.length) | 0;
+function nextWrongLine(){
+  wrongLineIx = (wrongLineIx + 1 + ((Math.random() * 2) | 0)) % CHATTER.wrong.length;
+  return CHATTER.wrong[wrongLineIx];
+}
+// v2: report-card stamps for a gloriously chaotic day — funny, never scolding
+const CHAOS_CARDS = [
+  'HEALTH INSPECTOR ALERTED!',
+  'THE FOOD CRITIC FAINTED',
+  'SAMMY HID UNDER HIS STOOL',
+  'A MENU NOBODY ASKED FOR',
+];
 
 const G = {
   scene: 'title', tick: 0,
@@ -1295,6 +1552,7 @@ const G = {
   cosm: Object.assign({ neon:'pink', counter:'classic', jukebox:false,
                         owned:['neon_pink', 'counter_classic'] }, LS.get('cosm', {})),
   timeLeft: 0, dayLen: 0, spawnT: 0, expired: 0, closing: false, closeT: 0,
+  wrongServed: 0,
   orderNum: 0, p2Queued: false,
   banner: null,           // {text, sub, t}
   intro: null,            // {t, newFam, skippable}
@@ -1307,11 +1565,11 @@ function mkPlayer(i){
   return {
     idx: i, active: false,
     sel: 0, navX: 0, navY: 0, navT: 0,
-    build: [], stack: [],       // stack: {id, idx, off, vy, landed, squash}
+    build: [], stack: [],       // stack: {id, idx, off, vy, landed, squash, splat}
+    validLen: 0,                // longest prefix of build that still matches a ticket
     tickets: [],
-    serve: null,                // {t, seq, tip, plateX0}
+    serve: null,                // {t, entries, tip, wrong, target}
     scrapT: 0, plateT: 1, plateDip: 0,
-    bounces: [],                // {id, idx, x, y, vx, vy, rot, vr, t}
     serveTicket: null,
     combo: 0, bestCombo: 0, served: 0, mistake: false,
     pulseIds: [], pulseT: 0, hintT: 0, flipT: 0, pressT: 0, pressSel: -1,
@@ -1370,6 +1628,26 @@ function burstServe(x, y){
     spawnPart(B.pSteam, x + rnd(-20, 20), y - 30, { vy: -60, life: 0.9, s: 0.6, s1: 1.5, a: 0.8 });
   spawnPart(B.pSpark, x, y - 40, { vy: -40, life: 0.5, s: 1.4, s1: 0.4, vr: 5 });
 }
+// v2 CHAOS: splash blobs, baked once per splat color (bounded by SOFT keys)
+const SPLAT_SPRS = {};
+function splatBlob(col){
+  if (SPLAT_SPRS[col]) return SPLAT_SPRS[col];
+  const c = mk(14, 14), g = c.getContext('2d');
+  g.beginPath(); g.ellipse(7, 7, 5.5, 4, 0.3, 0, Math.PI * 2);
+  g.fillStyle = col; g.fill();
+  g.fillStyle = 'rgba(255,255,255,0.35)';
+  g.beginPath(); g.ellipse(5.4, 5.4, 2, 1.3, 0.3, 0, Math.PI * 2); g.fill();
+  return (SPLAT_SPRS[col] = anchorSpr(c, 7, 7));
+}
+function burstSplat(id, x, y){
+  const spr = splatBlob(SOFT[id] || '#d8352a');
+  const n = LOWFX ? 4 : 9;
+  for (let i = 0; i < n; i++)
+    spawnPart(spr, x + rnd(-30, 30), y - rnd(0, 14),
+      { vx: rnd(-230, 230), vy: rnd(-260, -60), grav: 640, life: rnd(0.4, 0.75), s: rnd(0.8, 1.6), rot: rnd(0, 6), vr: rnd(-8, 8) });
+  for (let i = 0; i < (LOWFX ? 1 : 2); i++)
+    spawnPart(B.pSteam, x + rnd(-20, 20), y - 16, { vy: -50, life: 0.7, s: 0.5, s1: 1.2, a: 0.7 });
+}
 
 /* ── floating popups (pooled) ── */
 const POPS = [];
@@ -1390,17 +1668,19 @@ function bubbleSpr(text){
   const m = mk(4, 4).getContext('2d');
   m.font = fnt(15, false);
   const tw = m.measureText(text).width;
+  // tail on TOP: bubbles hang BELOW the ticket cards on the rail (v1 drew
+  // them above, where the screen edge swallowed every line)
   const c = mk(tw + 30, 46), g = c.getContext('2d');
-  rr(g, 2, 2, c.width - 4, 32, 12);
+  rr(g, 2, 12, c.width - 4, 32, 12);
   g.fillStyle = PAL.paper; g.fill();
   g.strokeStyle = PAL.inkSoft; g.lineWidth = 2.5; g.stroke();
-  g.beginPath(); g.moveTo(c.width / 2 - 8, 33); g.lineTo(c.width / 2 + 6, 33); g.lineTo(c.width / 2 - 2, 44); g.closePath();
+  g.beginPath(); g.moveTo(c.width / 2 - 8, 13); g.lineTo(c.width / 2 + 6, 13); g.lineTo(c.width / 2 - 2, 2); g.closePath();
   g.fillStyle = PAL.paper; g.fill();
   g.strokeStyle = PAL.inkSoft; g.stroke();
-  g.fillStyle = PAL.paper; g.fillRect(c.width / 2 - 7, 31, 12, 4);
+  g.fillStyle = PAL.paper; g.fillRect(c.width / 2 - 7, 12, 12, 4);
   g.font = fnt(15, false); g.textAlign = 'center'; g.textBaseline = 'middle';
-  g.fillStyle = PAL.ink; g.fillText(text, c.width / 2, 19);
-  return (BUBBLE_CACHE[text] = anchorSpr(c, c.width / 2, 44));
+  g.fillStyle = PAL.ink; g.fillText(text, c.width / 2, 29);
+  return (BUBBLE_CACHE[text] = anchorSpr(c, c.width / 2, 2));
 }
 
 /* ── tickets ── */
@@ -1450,7 +1730,7 @@ function spawnTicket(p, dish){
     dish: dish.id, name: dish.name, seq: dish.seq,
     num: ++G.orderNum,
     state: 'in', t: 0,
-    patMax: clamp(48 - G.day * 1.5, 30, 46),
+    patMax: clamp(34 - G.day * 1.0, 24, 32),   // v2: scaled to the shorter day
     patience: 0, mood: 0, reserved: false, hurried: false,
     slot: p.tickets.length,
     x: L.off + L.w + 90, y: 0,
@@ -1472,9 +1752,12 @@ function removeTicket(p, t){
 function sayBubble(t, text){ t.bubble = bubbleSpr(text); t.bubbleT = 2.2; }
 
 /* ── day/menu helpers ── */
-function dayLen(day){ return clamp(115 + day * 10, 125, 175); }
+// v2 knob: DAY_LEN, in seconds. v1 ran 125–175s; John asked for ~100–120.
+// Spawn pacing and patience scale with it so short days still feel BUSY.
+const DAY_LEN = { base: 98, perDay: 2, min: 100, max: 120 };
+function dayLen(day){ return clamp(DAY_LEN.base + day * DAY_LEN.perDay, DAY_LEN.min, DAY_LEN.max); }
 function spawnInterval(){
-  const base = clamp(10.6 - G.day * 0.5, 5.6, 10.1);
+  const base = clamp(8.2 - G.day * 0.4, 4.4, 7.8);
   return base / (twoP() ? 1.7 : 1) * rnd(0.85, 1.15);
 }
 function pickDish(){
@@ -1539,14 +1822,14 @@ function heldDir(i){
 }
 
 /* ── grid nav ── */
-function gridDims(n){
-  const per = 7, rows = Math.ceil(n / per);
+function gridDims(n, per){
+  const rows = Math.ceil(n / per);
   return { per, rows, inRow(r){ return r === rows - 1 ? n - r * per : per; } };
 }
 function moveSel(p, dx, dy){
   const n = p.unlocked.length;
   if (!n) return;
-  const d = gridDims(n);
+  const d = gridDims(n, layoutOf(p).grid.perRow);
   let r = (p.sel / d.per) | 0, c = p.sel % d.per;
   if (dx){ const w = d.inRow(r); c = (c + dx + w) % w; }
   if (dy){ r = (r + dy + d.rows) % d.rows; c = Math.min(c, d.inRow(r) - 1); }
@@ -1564,44 +1847,57 @@ function busyPlate(p){ return !!p.serve || p.scrapT > 0 || p.plateT < 0.6; }
 function candidates(p, pre){
   return p.tickets.filter(t => (t.state === 'wait' || t.state === 'in') && !t.reserved && startsWith(t.seq, pre));
 }
+/* v2 THE CHAOS CLAUSE: nothing is ever blocked. EVERY ingredient lands on
+   the stack — soft things SPLAT when they land somewhere wrong, and □ ships
+   whatever is on the plate down the line, no matter what it is. */
+const MAX_STACK = 26;   // a physical plate limit, not a rule — keeps ops sane
 function addIng(p, id){
   if (G.scene !== 'play' || busyPlate(p)) return;
   if (p.serveTicket) return;   // build complete — it's already on its way
+  if (p.stack.length >= MAX_STACK){
+    G.shakeT = 0.2; SFX.nope();
+    if (p.hintT <= 0){
+      p.hintT = 4;
+      popup('THE PLATE IS FULL — ' + GL.west + ' SEND IT!', layoutOf(p).plateX, layoutOf(p).plateY - 190, 19, PAL.cream, 1.5);
+    }
+    return;
+  }
   const nb = p.build.concat(id);
   const cands = candidates(p, nb);
-  if (!cands.length){ wrongIng(p, id); return; }
+  const ok = cands.length > 0;
   p.build.push(id);
   const idx = p.build.length - 1;
-  p.stack.push({ id, idx, off: 120 + Math.min(idx * 6, 40), vy: 0, landed: false, squash: 0 });
-  const done = cands.find(t => t.seq.length === nb.length);
-  if (done){ done.reserved = true; p.serveTicket = done; }
+  p.stack.push({ id, idx, off: 120 + Math.min(idx * 6, 40), vy: 0, landed: false, squash: 0,
+                 splat: !ok && !!SOFT[id] });
+  if (ok){
+    p.validLen = p.build.length;
+    const done = cands.find(t => t.seq.length === nb.length);
+    if (done){ done.reserved = true; p.serveTicket = done; }
+  } else chaosIng(p);
   p.pressT = 0.14; p.pressSel = p.unlocked.indexOf(id);
 }
-function wrongIng(p, id){
-  SFX.bounce();
+// A wrong ingredient still ships onto the stack — this only TEACHES.
+function chaosIng(p){
   if (window.ArcadeController) ArcadeController.rumble(p.idx, { duration: 120, strong: 0.3, weak: 0.5 });
   p.combo = 0; p.mistake = true;
-  const L = layoutOf(p);
-  const dir = Math.random() < 0.5 ? -1 : 1;
-  if (p.bounces.length < 3)
-    p.bounces.push({ id, idx: p.build.length, x: L.plateX, y: stackTopY(p) - 40, vx: dir * rnd(220, 330), vy: -rnd(300, 420), rot: 0, vr: dir * rnd(4, 9), t: 0 });
-  // instructive, not descriptive (Maria's law): show WHICH tiles are right,
-  // rate-limit the words.
+  // Maria's law: the RIGHT path stays visible — pulse the tiles that would
+  // continue the last valid prefix. Wrongness is allowed, never accidental-only.
   const valid = new Set();
-  for (const t of candidates(p, p.build)) if (t.seq[p.build.length]) valid.add(t.seq[p.build.length]);
+  for (const t of candidates(p, p.build.slice(0, p.validLen)))
+    if (t.seq[p.validLen]) valid.add(t.seq[p.validLen]);
   p.pulseIds = [...valid].map(v => p.unlocked.indexOf(v)).filter(i => i >= 0);
   p.pulseT = 1.6;
   if (p.hintT <= 0){
     p.hintT = 6;
-    const L2 = layoutOf(p);
-    popup(p.build.length ? 'CHECK THE TICKET!' : 'MATCH AN ORDER!', L2.plateX, L2.plateY - 190, 19, PAL.cream, 1.4);
+    const L = layoutOf(p);
+    popup(GL.west + ' SEND IT — OR ' + GL.east + ' SCRAP!', L.plateX, L.plateY - 190, 19, PAL.cream, 1.4);
   }
   G.shakeT = 0.18;
 }
 function stackTopY(p){
   const L = layoutOf(p);
   let h = 0;
-  for (const e of p.stack) h += layerSpr(e.id, e.idx, 'hero').rise * L.hero;
+  for (const e of p.stack) h += entrySpr(e, 'hero').rise * L.hero;
   return L.plateY - 10 - h;
 }
 function doScrap(p){
@@ -1610,7 +1906,38 @@ function doScrap(p){
   p.combo = 0; p.mistake = true;
   p.scrapT = 0.62;
   p.serveTicket = null;
+  p.validLen = 0;
   if (G.tips > 0){ G.tips -= 1; popup('-$1', layoutOf(p).plateX + 90, layoutOf(p).plateY - 120, 18, '#ffb0a0', 0.9); }
+}
+// □ = SEND IT. Ships the plate down the pass no matter what is on it.
+// (An exact-match build has already reserved its ticket and auto-serves —
+// the good path stays frictionless, so □ there is simply a no-op.)
+function sendIt(p){
+  if (G.scene !== 'play' || busyPlate(p)) return;
+  if (p.serveTicket) return;               // matching build — auto-serve owns it
+  if (!p.build.length){ SFX.nope(); return; }
+  // snap any still-falling layers down so the shipment leaves at once
+  for (const e of p.stack) if (!e.landed){ e.landed = true; e.off = 0; e.squash = 0.6; }
+  // who receives this… masterpiece? longest matching prefix, oldest first
+  let target = null, bestN = -1;
+  for (const t of p.tickets){
+    if (t.reserved || (t.state !== 'wait' && t.state !== 'in')) continue;
+    let n = 0;
+    while (n < t.seq.length && n < p.build.length && t.seq[n] === p.build[n]) n++;
+    if (n > bestN){ bestN = n; target = t; }
+  }
+  SFX.send();
+  if (window.ArcadeController) ArcadeController.rumble(p.idx, { duration: 150, strong: 0.4, weak: 0.6 });
+  p.combo = 0; p.mistake = false;
+  G.wrongServed++;
+  p.serve = { t: 0, entries: p.stack, tip: 0, wrong: true, target };
+  p.build = []; p.stack = []; p.validLen = 0;
+  if (target){
+    target.reserved = true;                 // patience freezes — they're served… something
+    target.mood = target.mood >= 2 ? 5 : 4; // aghast: mad if already worried, else bewildered
+    sayBubble(target, nextWrongLine());
+    target.bubbleT = 2.8;
+  }
 }
 function startServe(p, t){
   const L = layoutOf(p);
@@ -1624,8 +1951,8 @@ function startServe(p, t){
   p.bestCombo = Math.max(p.bestCombo, p.combo);
   const mult = 1 + 0.25 * Math.min(Math.max(p.combo - 1, 0), 8);
   const tip = Math.round((base + moodBonus) * mult);
-  p.serve = { t: 0, seq: p.build.slice(), tip, dishName: t.name };
-  p.build = []; p.stack = []; p.serveTicket = null;
+  p.serve = { t: 0, entries: p.stack, tip, dishName: t.name };
+  p.build = []; p.stack = []; p.serveTicket = null; p.validLen = 0;
   p.served++;
   t.state = 'served'; t.t = 0;
   sayBubble(t, pick(CHATTER.serve));
@@ -1633,11 +1960,20 @@ function startServe(p, t){
 function finishServe(p){
   const L = layoutOf(p);
   const s = p.serve;
-  G.tips += s.tip;
-  SFX.tip(s.tip);
-  popup('+$' + s.tip, L.passX, L.passY - 90, 26, PAL.goldLt, 1.2);
-  if (p.combo >= 2) popup('COMBO x' + p.combo, L.plateX, L.plateY - 200, 20, '#8ff0e2', 1.1);
-  burstServe(L.passX, L.passY - 10);
+  if (s.wrong){
+    // v2 wrong shipment lands: no tip, the ticket clears, the queue moves on
+    SFX.aghast();
+    popup('NO TIP…', L.passX, L.passY - 90, 22, '#ffb0a0', 1.2);
+    if (s.target){ s.target.state = 'leaving'; s.target.t = 0; }
+    for (let i = 0; i < (LOWFX ? 2 : 4); i++)
+      spawnPart(B.pSteam, L.passX + rnd(-24, 24), L.passY - 30, { vy: rnd(-70, -40), life: 0.9, s: 0.7, s1: 1.5, a: 0.8 });
+  } else {
+    G.tips += s.tip;
+    SFX.tip(s.tip);
+    popup('+$' + s.tip, L.passX, L.passY - 90, 26, PAL.goldLt, 1.2);
+    if (p.combo >= 2) popup('COMBO x' + p.combo, L.plateX, L.plateY - 200, 20, '#8ff0e2', 1.1);
+    burstServe(L.passX, L.passY - 10);
+  }
   p.serve = null;
   p.plateT = 0;
 }
@@ -1656,16 +1992,17 @@ function joinP2(fromScene){
 /* ── day flow ── */
 function startDay(day){
   G.day = day;
-  G.tips = 0; G.expired = 0; G.orderNum = 0;
+  G.tips = 0; G.expired = 0; G.wrongServed = 0; G.orderNum = 0;
   G.closing = false; G.closeT = 0;
   G.dayLen = dayLen(day); G.timeLeft = G.dayLen;
   G.spawnT = 0.8;
   const unlocked = unlockedIngredients(day);
   for (const p of P){
-    p.build = []; p.stack = []; p.tickets.forEach(t => { if (t.cv) TICKET_CV_POOL.push(t.cv); });
+    p.build = []; p.stack = []; p.validLen = 0;
+    p.tickets.forEach(t => { if (t.cv) TICKET_CV_POOL.push(t.cv); });
     p.tickets = [];
     p.serve = null; p.scrapT = 0; p.plateT = 1;
-    p.bounces.length = 0; p.serveTicket = null;
+    p.serveTicket = null;
     p.combo = 0; p.bestCombo = 0; p.served = 0; p.mistake = false;
     p.sel = 0; p.pulseT = 0; p.hintT = 0; p.flipT = 0;
     p.unlocked = unlocked;
@@ -1680,9 +2017,13 @@ function startDay(day){
 }
 function endDay(){
   const served = P[0].served + (P[1].active ? P[1].served : 0);
-  const total = served + G.expired;
+  // v2: wrong shipments count against the stars (0 stars is now possible —
+  // a gleeful garbage day still ends with a report card, just a funny one)
+  const total = served + G.expired + G.wrongServed;
   const ratio = total ? served / total : 1;
-  const stars = (ratio >= 0.85 && served >= 4) ? 3 : (ratio >= 0.55 && served >= 2) ? 2 : 1;
+  const stars = (ratio >= 0.85 && served >= 4) ? 3
+              : (ratio >= 0.55 && served >= 2) ? 2
+              : served >= 1 ? 1 : 0;
   const bestCombo = Math.max(P[0].bestCombo, P[1].active ? P[1].bestCombo : 0);
   const prev = G.best[G.day] || { tips: 0, stars: 0 };
   const newBest = G.tips > prev.tips;
@@ -1692,7 +2033,10 @@ function endDay(){
   LS.set('wallet', G.wallet);
   G.maxDay = Math.max(G.maxDay, G.day + 1);
   LS.set('day', G.maxDay);
-  G.report = { t: 0, stars, served, bestCombo, newBest, starSfx: 0, jingled: false };
+  G.report = { t: 0, stars, served, bestCombo, newBest, starSfx: 0, jingled: false,
+               wrong: G.wrongServed,
+               chaosLine: (stars <= 1 && G.wrongServed >= 3)
+                 ? CHAOS_CARDS[(G.day + G.wrongServed) % CHAOS_CARDS.length] : null };
   G.scene = 'report';
 }
 
@@ -1718,9 +2062,17 @@ function stepPlayer(p, dt){
       e.off -= e.vy * dt;
       if (e.off <= 0){
         e.off = 0; e.landed = true; e.squash = 1;
-        SFX.plop(e.idx);
         p.plateDip = 1;
-        burstLand(e.id, L.plateX, L.plateY - 10 - stackHeightBelow(p, e.idx) * L.hero);
+        const ly = L.plateY - 10 - stackHeightBelow(p, e.idx) * L.hero;
+        if (e.splat){
+          // v2 physical comedy: soft thing, wrong place — SPLAT
+          SFX.squelch();
+          burstSplat(e.id, L.plateX, ly);
+          G.shakeT = Math.max(G.shakeT, 0.16);
+        } else {
+          SFX.plop(e.idx);
+          burstLand(e.id, L.plateX, ly);
+        }
       } else allLanded = false;
     } else if (e.squash > 0) e.squash = Math.max(0, e.squash - dt * 5);
   }
@@ -1728,9 +2080,9 @@ function stepPlayer(p, dt){
   // completed build serves itself the moment the last layer lands
   if (p.serveTicket && allLanded && p.build.length === p.serveTicket.seq.length && !p.serve)
     startServe(p, p.serveTicket);
-  // serve slide
+  // serve slide (a wrong shipment travels a little slower — savor the wreckage)
   if (p.serve){
-    p.serve.t += dt / 0.55;
+    p.serve.t += dt / (p.serve.wrong ? 0.9 : 0.55);
     if (p.serve.t >= 1) finishServe(p);
   }
   if (p.plateT < 1) p.plateT = Math.min(1, p.plateT + dt / 0.3);
@@ -1744,14 +2096,6 @@ function stepPlayer(p, dt){
       for (let i = 0; i < n; i++) spawnPart(B.pSesame, L.plateX + rnd(-60, 60), L.plateY - 30, { vx: rnd(-80, 80), vy: rnd(-160, -60), grav: 500, life: 0.6, vr: 8 });
     }
     if (p.scrapT < 0) p.scrapT = 0;
-  }
-  // wrong-ingredient bounce sprites
-  for (let i = p.bounces.length - 1; i >= 0; i--){
-    const b = p.bounces[i];
-    b.t += dt;
-    b.vy += 1300 * dt;
-    b.x += b.vx * dt; b.y += b.vy * dt; b.rot += b.vr * dt;
-    if (b.t > 1 || b.y > 780) p.bounces.splice(i, 1);
   }
   if (p.pulseT > 0) p.pulseT -= dt;
   if (p.hintT > 0) p.hintT -= dt;
@@ -1795,7 +2139,7 @@ function stepPlayer(p, dt){
 }
 function stackHeightBelow(p, idx){
   let h = 0;
-  for (let i = 0; i < idx; i++) h += layerSpr(p.stack[i].id, p.stack[i].idx, 'hero').rise;
+  for (let i = 0; i < idx && i < p.stack.length; i++) h += entrySpr(p.stack[i], 'hero').rise;
   return h;
 }
 
@@ -1865,6 +2209,7 @@ function routeEvent(ev){
     if (!p.active) return;
     if (b === 'south'){ if (p.unlocked.length) addIng(p, p.unlocked[p.sel]); }
     else if (b === 'east') doScrap(p);
+    else if (b === 'west') sendIt(p);
     else if (b === 'north'){
       if (p.flipT <= 0){
         p.flipT = 0.42; SFX.flip();
@@ -1908,7 +2253,7 @@ function toTitle(){
   P[1].active = false;
   for (const p of P){
     p.tickets.forEach(t => { if (t.cv) TICKET_CV_POOL.push(t.cv); });
-    p.tickets = []; p.build = []; p.stack = []; p.serve = null; p.serveTicket = null;
+    p.tickets = []; p.build = []; p.stack = []; p.validLen = 0; p.serve = null; p.serveTicket = null;
   }
   for (const pp of POPS) pp.on = false;
   for (const pt of PARTS) if (pt.on){ pt.on = false; }
@@ -2002,8 +2347,9 @@ function step(){
     const r = G.report;
     const was = r.t;
     r.t += dt;
-    // stamp sounds as lines land
-    for (const st of [0.35, 0.55, 0.75, 0.95]) if (was < st && r.t >= st) SFX.stamp();
+    // stamp sounds as lines land (plus one for the chaos stamp, if earned)
+    for (const st of [0.35, 0.55, 0.75, 0.95, 1.15]) if (was < st && r.t >= st) SFX.stamp();
+    if (r.chaosLine && was < 2.3 && r.t >= 2.3){ SFX.stamp(); SFX.aghast(); }
     for (let s = 0; s < r.stars; s++){
       const at = 1.45 + s * 0.38;
       if (was < at && r.t >= at){
@@ -2036,15 +2382,25 @@ function drawSeqStack(seq, x, baseY, s){
     cum += ls.rise;
   }
 }
+// v2: a splatted layer FALLS as its true self and lands as a splat — that
+// beat (shake in the air → SPLAT on the burger) is the whole gag.
 function drawLiveStack(p, L, x){
   let cum = 0;
   for (const e of p.stack){
-    const ls = layerSpr(e.id, e.idx, 'hero');
+    const fin = entrySpr(e, 'hero');
     const yT = L.plateY - 10 - cum * L.hero;
     if (e.landed){
-      if (e.squash > 0) diSquash(ls.spr, x, yT, L.hero, 1 - 0.32 * e.squash);
-      else di(ls.spr, x, yT, L.hero);
-    } else di(ls.spr, x, yT - e.off, L.hero);
+      if (e.squash > 0) diSquash(fin.spr, x, yT, L.hero, 1 - 0.32 * e.squash);
+      else di(fin.spr, x, yT, L.hero);
+    } else di(layerSpr(e.id, e.idx, 'hero').spr, x, yT - e.off, L.hero);
+    cum += fin.rise;
+  }
+}
+function drawEntriesStack(entries, x, baseY, s){
+  let cum = 0;
+  for (const e of entries){
+    const ls = entrySpr(e, 'hero');
+    di(ls.spr, x, baseY - cum * s, s);
     cum += ls.rise;
   }
 }
@@ -2098,6 +2454,7 @@ function drawTicket(p, t, L){
   if (t.state === 'served'){ y -= easeIn(t.t) * 300; rot = t.t * 0.45; a = 1 - t.t; }
   else if (t.state === 'leaving'){ y += easeIn(t.t) * 150; rot = -t.t * 0.2; a = 1 - t.t * t.t; }
   else if (t.mood === 2) rot = Math.sin(G.sammyT * 16 + t.faceSeed) * 0.022;
+  else if (t.mood >= 4) rot = Math.sin(G.sammyT * 9 + t.faceSeed) * 0.035;   // aghast wobble
   const card = { cv: t.cv, ax: 75, ay: 0 };
   di(card, cx, y, sc, rot, a);
   // face badge
@@ -2109,8 +2466,11 @@ function drawTicket(p, t, L){
     ctx.fillStyle = t.mood === 0 ? '#5fae35' : t.mood === 1 ? PAL.gold : PAL.red;
     ctx.fillRect(t.x + 11 * sc, y + 168.5 * sc, (128 * r) * sc, 6 * sc);
   }
-  if (t.bubble && t.bubbleT > 0)
-    di(t.bubble, cx, y + 8, 1, 0, Math.min(1, t.bubbleT * 2));
+  if (t.bubble && t.bubbleT > 0){
+    // hang the bubble below the card; clamp long lines onto the screen
+    const bx = clamp(cx, t.bubble.cv.width / 2 + 4, W - t.bubble.cv.width / 2 - 4);
+    di(t.bubble, bx, y + 178 * sc, 1, 0, Math.min(1, t.bubbleT * 2));
+  }
 }
 function drawKitchen(p){
   const L = layoutOf(p);
@@ -2141,7 +2501,7 @@ function drawKitchen(p){
     const k = easeIn(Math.min(1, p.serve.t));
     const x = lerp(L.plateX, L.passX, k) + shx;
     di(B.plate, x, L.plateY + 4, L.hero);
-    drawSeqStack(p.serve.seq, x, L.plateY - 10, L.hero);
+    drawEntriesStack(p.serve.entries, x, L.plateY - 10, L.hero);
   } else if (p.plateT >= 1 || p.plateT > 0){
     const ps = L.hero * (0.55 + 0.45 * easeOut(p.plateT));
     diSquash(B.plate, L.plateX + shx, L.plateY + 4 + p.plateDip * 3, L.hero, ps / L.hero);
@@ -2156,10 +2516,13 @@ function drawKitchen(p){
     else lx = L.plateX + 340 * ((pr - 0.72) / 0.28);
     di(B.lid, lx, stackTopY(p) - 6, L.hero);
   }
-  // wrong-ingredient bounces
-  for (const b of p.bounces){
-    const ls = layerSpr(b.id, b.idx, 'hero');
-    di(ls.spr, b.x, b.y, L.hero * 0.9, b.rot, Math.max(0, 1 - b.t));
+  // v2: SEND IT prompt floats over any un-served build — the chaos door is
+  // always visibly open
+  if (p.build.length && !p.serveTicket && !p.serve && p.scrapT <= 0){
+    const py = clamp(stackTopY(p) - 34, 150, 700);
+    ctx.globalAlpha = 0.7 + 0.3 * Math.sin(G.sammyT * 5);
+    txt(GL.west + ' SEND IT', L.plateX, py, L.two ? 14 : 17, PAL.goldLt, 'center', true, 'rgba(59,38,32,0.9)');
+    ctx.globalAlpha = 1;
   }
   // service bell at the pass
   const bs = (L.two ? 0.7 : 1) * (G.bellT > 0 ? 1 + Math.sin(G.bellT * 40) * 0.1 * G.bellT : 1);
@@ -2327,6 +2690,7 @@ function drawPause(){
     txt(opts[i], 640, y, 26, sel ? PAL.goldLt : PAL.creamDk, 'center', true);
   }
   txt(GL.south + ' SELECT    START RESUME', 640, 560, 16, PAL.creamDk, 'center', false);
+  txt(GL.south + ' ADD    ' + GL.east + ' SCRAP    ' + GL.west + ' SEND IT    ' + GL.north + ' FLIP', 640, 592, 15, PAL.creamDk, 'center', false);
 }
 
 function drawReport(){
@@ -2339,8 +2703,8 @@ function drawReport(){
   di(B.paper, 0, 0, 1.06, 0.012);
   txt('DAY ' + G.day + ' — REPORT CARD', 0, -172, 27, PAL.ink, 'center', true);
   const line = (i, label, val, col) => {
-    txt(label, -230, -104 + i * 46, 19, PAL.inkSoft, 'left', true);
-    txt(val, 230, -104 + i * 46, 22, col || PAL.ink, 'right', true);
+    txt(label, -230, -110 + i * 40, 19, PAL.inkSoft, 'left', true);
+    txt(val, 230, -110 + i * 40, 22, col || PAL.ink, 'right', true);
   };
   if (r.t > 0.35) line(0, 'TIPS EARNED', '$' + G.tips, '#1f8a4c');
   if (r.t > 0.55){
@@ -2348,7 +2712,8 @@ function drawReport(){
     else line(1, 'ORDERS SERVED', '' + r.served);
   }
   if (r.t > 0.75) line(2, 'WALKED OUT', '' + G.expired, G.expired ? PAL.redDk : PAL.ink);
-  if (r.t > 0.95) line(3, 'BEST COMBO', 'x' + r.bestCombo);
+  if (r.t > 0.95) line(3, 'SENT ANYWAY', '' + r.wrong, r.wrong ? PAL.tealDeep : PAL.ink);
+  if (r.t > 1.15) line(4, 'BEST COMBO', 'x' + r.bestCombo);
   for (let s = 0; s < 3; s++){
     const at = 1.45 + s * 0.38;
     const on = s < r.stars && r.t >= at;
@@ -2359,6 +2724,13 @@ function drawReport(){
     ctx.save(); ctx.rotate(-0.08);
     txt('NEW BEST!', -168, 66, 24, PAL.red, 'center', true);
     ctx.restore();
+  }
+  // v2: the chaotic-day rubber stamp, right across the (gray) stars
+  if (r.chaosLine && r.t > 2.3){
+    ctx.save(); ctx.rotate(-0.06);
+    ctx.globalAlpha = 0.92;
+    txt(r.chaosLine, 0, 118, 26, PAL.red, 'center', true);
+    ctx.globalAlpha = 1; ctx.restore();
   }
   txt('TIP BANK  $' + G.wallet, 0, 178, 16, PAL.goldDk, 'center', true);
   ctx.restore();
@@ -2494,6 +2866,11 @@ requestAnimationFrame(frame);
 // read-only observability for the verification harness (real inputs only)
 window.__game = G;
 window.__players = P;
+window.__dishes = DISHES;
+window.__ings = ING_ORDER;
+window.__parts = PARTS;
+window.__tuning = { DAY_LEN, dayLen };
+window.__tileRect = tileRect;
 </script>
 </body>
 </html>
